@@ -1,0 +1,20 @@
+{
+  "include": ["app"],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    ".pytest_cache",
+    ".ruff_cache",
+    "alembic",
+    "tests"
+  ],
+  "venvPath": "C:\\Users\\Dat Nguyen\\miniconda3\\envs",
+  "venv": "ai-receptionist",
+  "typeCheckingMode": "strict",
+  "reportUnknownMemberType": "none",
+  "reportUnknownVariableType": "none",
+  "reportUnknownArgumentType": "none",
+  "reportUnknownParameterType": "none",
+  "reportMissingTypeArgument": "none",
+  "reportMissingTypeStubs": "none"
+}

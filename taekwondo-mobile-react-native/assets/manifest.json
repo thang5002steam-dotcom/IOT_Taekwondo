@@ -1,0 +1,23 @@
+{
+  "short_name": "TKD Văn Quán",
+  "name": "Hệ thống Điểm danh Võ đường",
+  "icons": [
+    {
+      "src": "/logo/android/launchericon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo/android/launchericon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#000000"
+}

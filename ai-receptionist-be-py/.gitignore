@@ -1,0 +1,27 @@
+# IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+
+# Secrets
+.env
+
+# Local AI models
+insightface_data/
+.codegraph**
+.codex**
+.gemini**
+.agents**
+
+# ADK local sessions and artifacts
+.adk/
+docs/log.txt
+pyright-report.json
+.pytest_tmp/
+.pytest_cache/

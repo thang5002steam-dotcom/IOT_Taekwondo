@@ -1,0 +1,22 @@
+from .ontology.ontology_alias_service import OntologyAliasService
+from .ontology.ontology_compiled_snapshot_service import OntologyCompiledSnapshotService
+from .ontology.ontology_compiler import OntologyCompiler
+from .ontology.ontology_entity_type_service import OntologyEntityTypeService
+from .ontology.ontology_lifecycle import OntologyLifecycle
+from .ontology.ontology_property_service import OntologyPropertyService
+from .ontology.ontology_relationship_service import OntologyRelationshipService
+from .ontology.schema_context import SchemaContextService
+from .ontology.ontology_version_service import OntologyVersionService
+
+__all__ = [
+    "OntologyAliasService",
+    "OntologyCompiledSnapshotService",
+    "OntologyCompiler",
+    "OntologyEntityTypeService",
+    "OntologyLifecycle",
+    "OntologyPropertyService",
+    "OntologyRelationshipService",
+    "SchemaContextService",
+    "OntologyVersionService",
+]
+

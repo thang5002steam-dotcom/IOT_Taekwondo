@@ -1,0 +1,1 @@
+self.__FCM_CONFIG__ = {"apiKey":"AIzaSyA_XD2TxDtOQpiUamf_GwdaK5PLslRpQ2A","authDomain":"taekwondo-van-quan.firebaseapp.com","projectId":"taekwondo-van-quan","storageBucket":"taekwondo-van-quan.firebasestorage.app","messagingSenderId":"230986281910","appId":"1:230986281910:web:a701da8480de54259ec717"};

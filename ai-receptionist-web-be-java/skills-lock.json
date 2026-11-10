@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "skills": {
+    "code-review": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/code-review/SKILL.md",
+      "computedHash": "591a274f7be02c24da6628b464b66be44c351adfccd7e8c12f550715c695e3fe"
+    },
+    "codebase-design": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/codebase-design/SKILL.md",
+      "computedHash": "caea3cb8a8281ff829fd1a2b985044e77601b62f301adf43f689ccfc74c15f6f"
+    },
+    "database-architect": {
+      "source": "rmyndharis/antigravity-skills",
+      "sourceType": "github",
+      "skillPath": "skills/database-architect/SKILL.md",
+      "computedHash": "4200c80bbaa1c1ec1ef77363c99a87c3fe74c9768739e22ee41662c4d9621c02"
+    },
+    "database-schema-design": {
+      "source": "mohitagw15856/pm-claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/database-schema-design/SKILL.md",
+      "computedHash": "4905519fb7edbf4ab636627f3691e278533f9090c9a48072a5c4d77d9bbe34fa"
+    },
+    "firebase-basics": {
+      "source": "firebase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/firebase-basics/SKILL.md",
+      "computedHash": "6c40f96765c945a406244f2f020133c7cf4e7857be055f7420e2f9465e5b1e7e"
+    },
+    "improve-codebase-architecture": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
+      "computedHash": "016f12709bff30a27419e8add978a9be70f5ca1fb6738b3be6793038e0aba631"
+    },
+    "redis-connections": {
+      "source": "redis/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/redis-connections/SKILL.md",
+      "computedHash": "650825cfc353cff566cf04523e79932a43a9ef4774e795473ee224377602e495"
+    },
+    "redis-core": {
+      "source": "redis/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/redis-core/SKILL.md",
+      "computedHash": "cb71ae830f0e6431fc4696c2a0578d40840b2f3de84daa40cbe6275f16591ee0"
+    },
+    "senior-architect": {
+      "source": "alirezarezvani/claude-skills",
+      "sourceType": "github",
+      "skillPath": "engineering-team/skills/senior-architect/SKILL.md",
+      "computedHash": "2b463626bf730b21872768447388c18a4387a7a307e00013b696c0f15e5659e3"
+    },
+    "senior-backend": {
+      "source": "alirezarezvani/claude-skills",
+      "sourceType": "github",
+      "skillPath": "engineering-team/skills/senior-backend/SKILL.md",
+      "computedHash": "86dbafb23f7c101f59d8d3233522683baf0614141b4a02ba6dbfc4174b4867f6"
+    },
+    "senior-prompt-engineer": {
+      "source": "alirezarezvani/claude-skills",
+      "sourceType": "github",
+      "skillPath": "engineering-team/skills/senior-prompt-engineer/SKILL.md",
+      "computedHash": "09c11f243d8e01bc3c7d7a94c6a46daff7a1a349351b7aad223a00eace1914be"
+    },
+    "setup-matt-pocock-skills": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "computedHash": "1114faf86d8658d6b3c729e7e604fbfecdee3fa112f23c4889463e87da662aec"
+    },
+    "video-engineer": {
+      "source": "belokonm/claude-supercode-skills",
+      "sourceType": "github",
+      "skillPath": "video-engineer-skill/SKILL.md",
+      "computedHash": "4c185d18fb49fe83e813b189dd54af234831920b56aa7157f7ccacfcee77e3ae"
+    },
+    "websocket-engineer": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/websocket-engineer/SKILL.md",
+      "computedHash": "4bef4aa100aed52e40e3acf88defb3cdc55afd399cbeb95c505aac2bd1b19fd6"
+    }
+  }
+}

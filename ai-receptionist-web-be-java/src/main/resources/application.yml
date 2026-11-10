@@ -1,0 +1,320 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/version_4}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      leak-detection-threshold: 60000
+      validation-timeout: 5000
+      initialization-fail-timeout: 60000
+      auto-commit: false
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      username: ${SPRING_DATA_REDIS_USERNAME:}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
+      connect-timeout: ${SPRING_DATA_REDIS_CONNECT_TIMEOUT:10s}
+      timeout: ${SPRING_DATA_REDIS_TIMEOUT:10s}
+
+      ssl:
+        enabled: ${SSL_ENABLED:false}
+        disable-peer-verification: ${SPRING_DATA_REDIS_SSL_DISABLE_PEER_VERIFICATION:true}
+
+      repositories:
+        enabled: true
+
+  mail:
+    host: ${SPRING_MAIL_HOST:}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${SPRING_MAIL_SMTP_AUTH:true}
+      mail.smtp.starttls.enable: ${SPRING_MAIL_STARTTLS_ENABLE:true}
+
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    virtual-host: ${SPRING_RABBITMQ_VIRTUAL_HOST:/}
+    ssl:
+      enabled: true
+
+  threads:
+    virtual:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
+    database: PostgreSQL
+    show-sql: true
+    open-in-view: false
+    repositories:
+      enabled: true
+    defer-datasource-initialization: false
+    properties:
+      hibernate:
+        generate_statistics: true
+        jdbc:
+          time_zone: Asia/Ho_Chi_Minh
+          batch_size: 50
+          order_updates: true
+          order_inserts: true
+          batch_versioned_data: true
+        connection:
+          provider_disables_autocommit: true
+        query:
+          plan_cache_max_size: 2048
+          plan_parameter_metadata_max_size: 128
+
+  #        temp:
+  #          use_jdbc_metadata_defaults: false
+  #        boot:
+  #          allow_jdbc_metadata_access: false
+
+  sql:
+    init:
+      mode: never
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  Jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+  flyway:
+    enabled: ${SPRING_FLYWAY_ENABLED:false}
+    baseline-on-migrate: false
+
+logging:
+  level:
+    #      org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport: ERROR
+    #      org.springframework.security: WARN
+    #      com.zaxxer.hikari: WARN
+    #      org.hibernate: WARN
+    #      org.postgresql: WARN
+    #      root: INFO
+    #      org.springframework.web: INFO
+
+    root: INFO
+
+    # 1.
+    org.hibernate.SQL: OFF
+    org.hibernate.type.descriptor.sql.BasicBinder: OFF
+
+    # 2.
+    org.hibernate.stat: ERROR
+    org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: INFO
+    org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport: ERROR
+
+    # 3.
+    org.springframework.web: DEBUG # Log các yêu cầu HTTP và phản hồi
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    org.springframework.security: WARN # Log các sự kiện liên quan đến bảo mật
+    com.zaxxer.hikari: WARN # Log các sự kiện liên quan đến HikariCP
+    org.postgresql: WARN
+
+jwt:
+  base64-secret: ${JWT_BASE64_SECRET}
+  access-token-validity-in-seconds: ${JWT_ACCESS_TOKEN_VALIDITY_IN_SECONDS}
+  refresh-token-validity-in-seconds: ${JWT_REFRESH_TOKEN_VALIDITY_IN_SECONDS}
+
+rate-limit:
+  # Enable only when the edge proxy overwrites X-Forwarded-For from untrusted clients.
+  trust-forwarded-headers: ${RATE_LIMIT_TRUST_FORWARDED_HEADERS:false}
+  policies:
+    - name: password-reset-options
+      path: /api/v1/auth/password-reset/options
+      method: POST
+      limit: 10
+      window: 15m
+      subject: IP
+    - name: password-reset-send
+      path: /api/v1/auth/password-reset/send
+      method: POST
+      limit: 10
+      window: 15m
+      subject: IP
+    - name: password-reset-verify
+      path: /api/v1/auth/password-reset/verify
+      method: POST
+      limit: 20
+      window: 15m
+      subject: IP
+    - name: login-web
+      path: /api/v1/auth/login
+      method: POST
+      limit: 5
+      window: 5m
+      subject: IP
+    - name: login-mobile
+      path: /api/v1/auth/mobile/login
+      method: POST
+      limit: 5
+      window: 5m
+      subject: IP
+    - name: refresh-web
+      path: /api/v1/auth/refresh
+      method: POST
+      limit: 10
+      window: 5m
+      subject: IP
+    - name: refresh-mobile
+      path: /api/v1/auth/mobile/refresh
+      method: POST
+      limit: 10
+      window: 5m
+      subject: IP
+    - name: wallet-top-up-request-create
+      path: /api/v1/wallet-top-up-requests
+      method: POST
+      limit: 5
+      window: 1m
+      subject: AUTHENTICATED
+    - name: wallet-top-up-direct-create
+      path: /api/v1/wallet-top-up-requests/direct
+      method: POST
+      limit: 5
+      window: 1m
+      subject: AUTHENTICATED
+    - name: wallet-top-up-proof-upload
+      path: /api/v1/wallet-top-up-requests/*/proof
+      method: PUT
+      limit: 5
+      window: 1m
+      subject: AUTHENTICATED
+    - name: wallet-top-up-submit
+      path: /api/v1/wallet-top-up-requests/*/submit
+      method: POST
+      limit: 5
+      window: 1m
+      subject: AUTHENTICATED
+    - name: wallet-top-up-review
+      path: /api/v1/wallet-top-up-requests/*/approve
+      method: POST
+      limit: 10
+      window: 1m
+      subject: AUTHENTICATED
+    - name: wallet-top-up-reject
+      path: /api/v1/wallet-top-up-requests/*/reject
+      method: POST
+      limit: 10
+      window: 1m
+      subject: AUTHENTICATED
+    - name: course-purchase
+      path: /api/v1/wallets/course-purchases
+      method: POST
+      limit: 5
+      window: 1m
+      subject: AUTHENTICATED
+    - name: wallet-refund
+      path: /api/v1/wallets/refunds
+      method: POST
+      limit: 5
+      window: 1m
+      subject: AUTHENTICATED
+    - name: authenticated-default
+      path: /api/**
+      limit: 300
+      window: 1m
+      subject: AUTO
+
+app:
+  rabbitmq:
+    listener:
+      concurrent-consumers: ${APP_RABBITMQ_LISTENER_CONCURRENT_CONSUMERS:1}
+      max-concurrent-consumers: ${APP_RABBITMQ_LISTENER_MAX_CONCURRENT_CONSUMERS:3}
+      prefetch-count: ${APP_RABBITMQ_LISTENER_PREFETCH_COUNT:1}
+  face-check-in:
+    expire-after: ${APP_FACE_CHECK_IN_EXPIRE_AFTER:30s}
+  bootstrap:
+    users:
+      - role-code: SUPER_ADMIN
+        phone-number: ${BOOTSTRAP_SUPER_ADMIN_PHONE:0900000001}
+        password: ${BOOTSTRAP_SUPER_ADMIN_PASSWORD:123456}
+        person-code: ${BOOTSTRAP_SUPER_ADMIN_PERSON_CODE:VQ_SUPER_ADMIN}
+        full-name: ${BOOTSTRAP_SUPER_ADMIN_FULL_NAME:System Super Administrator}
+        email: ${BOOTSTRAP_SUPER_ADMIN_EMAIL:super.admin@example.local}
+      - role-code: SYSTEM_ADMIN
+        phone-number: ${BOOTSTRAP_SYSTEM_ADMIN_PHONE:0900000002}
+        password: ${BOOTSTRAP_SYSTEM_ADMIN_PASSWORD:123456}
+        person-code: ${BOOTSTRAP_SYSTEM_ADMIN_PERSON_CODE:VQ_SYSTEM_ADMIN}
+        full-name: ${BOOTSTRAP_SYSTEM_ADMIN_FULL_NAME:System Administrator}
+        email: ${BOOTSTRAP_SYSTEM_ADMIN_EMAIL:system.admin@example.local}
+
+firebase:
+  enabled: ${FIREBASE_ENABLED:false}
+  config-base64: ${FIREBASE_CONFIG_BASE64:}
+
+supabase:
+  url: ${SUPABASE_URL:}
+  service-role-key: ${SUPABASE_SERVICE_ROLE_KEY:}
+  storage:
+    face-image-bucket: ${SUPABASE_FACE_IMAGE_BUCKET:face-images}
+    top-up-proof-bucket: ${SUPABASE_TOP_UP_PROOF_BUCKET:wallet-top-up-proofs}
+    # Bucket private riêng cho video của phòng tập trọng tài; phải được tạo trên Supabase.
+    sparring-practice-video-bucket: ${SUPABASE_SPARRING_PRACTICE_VIDEO_BUCKET:sparring-practice-videos}
+    max-file-size: ${SUPABASE_FACE_IMAGE_MAX_SIZE:5242880}
+    max-video-file-size: ${SUPABASE_SPARRING_PRACTICE_VIDEO_MAX_SIZE:524288000}
+    signed-url-ttl-seconds: ${SUPABASE_FACE_IMAGE_SIGNED_URL_TTL_SECONDS:3600}
+
+avatar:
+  cache:
+    rebuild:
+      enabled: ${AVATAR_CACHE_REBUILD_ENABLED:false}
+
+cache:
+  ttl:
+    one-day-seconds: 86400
+    one-week-seconds: 604800
+    one-month-seconds: 2592000
+
+face:
+  match-threshold: ${FACE_MATCH_THRESHOLD:0.70}
+
+python-backend:
+  api: ${BACKEND_PYTHON_API:}
+  hugging-face-token: ${HUGGING_FACE_TOKEN:}
+  connect-timeout: ${PYTHON_BACKEND_CONNECT_TIMEOUT:5s}
+  read-timeout: ${PYTHON_BACKEND_READ_TIMEOUT:60s}
+
+bytescale:
+  account-id: ${BYTESCALE_ACCOUNT_ID}
+  api-key: ${BYTESCALE_API_KEY}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:8082,https://taekwondovanquan.vercel.app,https://datnguyentrung-ai-receptionist-be.hf.space,https://9xvkf4gs-8082.asse.devtunnels.ms/,https://ky-nang.vercel.app}
+
+server:
+  port: ${PORT:8080}
+  address: 0.0.0.0
+  tomcat:
+    threads:
+      max: ${SERVER_TOMCAT_THREADS_MAX:40}
+      min-spare: ${SERVER_TOMCAT_THREADS_MIN_SPARE:5}
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+facebook:
+  app-id: ${FACEBOOK_APP_ID}
+  app-secret: ${FACEBOOK_APP_SECRET}

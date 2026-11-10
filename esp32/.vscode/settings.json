@@ -1,0 +1,6 @@
+{
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}",
+    "--query-driver=C:/Users/datng/.platformio/packages/toolchain-xtensa-esp-elf/bin/xtensa-esp32-elf-*.exe"
+  ]
+}
