@@ -30,26 +30,6 @@ Cảm biến PIR ──> ESP32 ──MQTT TCP :1883──> iot_mqtt broker + rel
 - ESP32 gửi lên topic `esp32/{deviceId}/sensor`. Relay chuyển sự kiện đã chuẩn hóa sang `taekwondo/events`; ứng dụng nhận qua WebSocket.
 - ADK Web/GraphRAG trong dự án Python là tiến trình riêng, không phải một endpoint của FastAPI chính. Xem [hướng dẫn Python](ai-receptionist-be-py/README.md) nếu cần chạy phần này.
 
-### Luồng MQTT đến fog server
-
-Trong dự án này, **fog server** là máy trong mạng nội bộ chạy tiến trình Python [`iot_mqtt/main.py`](iot_mqtt/main.py). Một tiến trình chứa cả aMQTT broker và relay; dữ liệu cảm biến được xử lý ở máy này trước khi chuyển cho ứng dụng.
-
-1. ESP32 kết nối Wi-Fi rồi kết nối đến IPv4 của fog server qua MQTT TCP, cổng `1883`. Địa chỉ broker, `DEVICE_ID` và topic được đặt trong `esp32/include/config.h` (tạo từ [`config.example.h`](esp32/include/config.example.h)). Khi mất Wi-Fi hoặc MQTT, firmware thử kết nối lại.
-2. Khi cảm biến PIR chuyển từ không phát hiện sang phát hiện chuyển động, [`src/main.cpp`](esp32/src/main.cpp) gọi `publishSensorSample()`. Lệnh `SCAN` trong Serial Monitor cũng gọi hàm này để thử thủ công. Bản tin hiện tại là dữ liệu demo `{"value":N}` với `N` ngẫu nhiên từ 1 đến 10, **không phải số đo nhiệt độ/độ ẩm**.
-3. ESP32 publish bản tin tới `esp32/<deviceId>/sensor`, ví dụ `esp32/esp32-01/sensor`, với QoS 1 và `retain=false`. ESP32 chờ `PUBACK` từ broker; ACK này xác nhận broker đã nhận bản tin, chưa xác nhận ứng dụng đã nhận.
-4. Broker trên fog server nhận bản tin. Relay [`app/mqtt_relay.py`](iot_mqtt/app/mqtt_relay.py) subscribe `esp32/+/sensor`, lấy `deviceId` từ topic và dùng [`app/event_mapper.py`](iot_mqtt/app/event_mapper.py) tạo sự kiện `SENSOR_UPDATE` gồm `eventId`, `occurredAt` và `data`.
-5. Relay publish sự kiện đã chuẩn hóa lên `taekwondo/events` cũng với QoS 1. Ứng dụng Expo kết nối broker bằng MQTT qua WebSocket `ws://<IP_FOG_SERVER>:9001/mqtt` và subscribe topic này. Ở màn hình cảm biến, người dùng cần đăng nhập và bật **Bật nhận**; khi nhận một sự kiện, ứng dụng hiển thị payload rồi chuyển sang luồng check-in.
-
-Ví dụ một bản tin được chuyển đổi (ID và thời gian thay đổi theo từng lần gửi):
-
-```text
-ESP32 → topic esp32/esp32-01/sensor: {"value":7}
-Fog server → topic taekwondo/events:
-{"type":"SENSOR_UPDATE","eventId":"<uuid>","occurredAt":"<UTC_ISO_TIME>","data":{"value":7,"deviceId":"esp32-01"}}
-```
-
-Đường MQTT này không đi qua API Java. Theo mã hiện tại, fog server phát lại sự kiện cho client đang kết nối; nó không lưu bản tin cảm biến vào cơ sở dữ liệu. Các cổng và topic mặc định nằm trong [`iot_mqtt/.env.example`](iot_mqtt/.env.example).
-
 ## Chạy thử từng phần
 
 Các lệnh dưới đây chạy từ thư mục gốc của kho mã nguồn. Những dịch vụ ngoài như PostgreSQL, Redis, RabbitMQ và thông tin truy cập phải được chuẩn bị theo [`application.yml`](ai-receptionist-web-be-java/src/main/resources/application.yml) trước khi chạy đầy đủ API Java. Không đưa mật khẩu hoặc khóa dịch vụ vào commit.
