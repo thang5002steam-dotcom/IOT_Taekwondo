@@ -19,7 +19,10 @@ export function SensorStreamScreen() {
     // One accepted sensor event starts one check-in flow. Stop listening first
     // so retained/repeated events cannot navigate repeatedly.
     setIsReceiving(false);
-    router.push('/check-in' as Href);
+    router.push({
+      pathname: '/check-in',
+      params: { source: 'mqtt' },
+    } as Href);
   }, [router]);
   useMqttSubscription(env.mqttDefaultTopic, handleMessage, isReceiving);
 

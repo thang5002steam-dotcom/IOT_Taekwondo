@@ -1,12 +1,13 @@
 import { ConfirmationDialog } from "@/shared/ui/ConfirmationDialog";
 import { ThemedText } from "@/shared/ui/ThemedText";
 import { Colors, radii } from "@/theme";
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   type ComponentType,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { ActivityIndicator, AppState, StyleSheet, View } from "react-native";
@@ -30,6 +31,8 @@ import { VisionCameraErrorBoundary } from "../components/VisionCameraErrorBounda
 import { useCheckInCamera } from "../hooks/useCheckInCamera";
 import { useCheckInCameraLayout } from "../hooks/useCheckInCameraLayout";
 import { useFaceCheckInSession } from "../hooks/useFaceCheckInSession";
+import { env } from "@/config/env";
+import { useMqttSubscription } from "@/infrastructure/mqtt";
 import type {
   FaceQualityReason,
   ScannerState,
@@ -41,6 +44,7 @@ const CAMERA_PERMISSION_DENIED_DESCRIPTION =
   "Bạn đã từ chối quyền Camera. Vui lòng cho phép để tiếp tục điểm danh.";
 const CAMERA_PERMISSION_LOCKED_DESCRIPTION =
   "Thiết bị không cho hỏi lại quyền Camera. Vui lòng bật quyền trong phần Cài đặt của hệ thống.";
+const MQTT_CAMERA_IDLE_TIMEOUT_MS = 15_000;
 
 type ScannerPresentation = {
   state: ScannerState;
@@ -55,8 +59,10 @@ const DEFAULT_SCANNER_PRESENTATION: ScannerPresentation = {
 };
 
 export default function CheckInScreen() {
+  const { source } = useLocalSearchParams<{ source?: string }>();
   const layout = useCheckInCameraLayout();
   const session = useFaceCheckInSession();
+  const mqttIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [initialVisionLoad] = useState(loadVisionCamera);
   const [isFocused, setIsFocused] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
@@ -162,6 +168,30 @@ export default function CheckInScreen() {
     else router.replace("/");
   }, []);
   const goHome = useCallback(() => router.replace("/"), []);
+
+  const isMqttTriggeredSession = source === "mqtt";
+  const resetMqttIdleTimer = useCallback(() => {
+    if (mqttIdleTimerRef.current) clearTimeout(mqttIdleTimerRef.current);
+    mqttIdleTimerRef.current = setTimeout(() => {
+      session.cancelCheckIn();
+      leaveCheckInScreen();
+    }, MQTT_CAMERA_IDLE_TIMEOUT_MS);
+  }, [leaveCheckInScreen, session.cancelCheckIn]);
+
+  useMqttSubscription(
+    env.mqttDefaultTopic,
+    resetMqttIdleTimer,
+    isMqttTriggeredSession && isFocused,
+  );
+
+  useEffect(() => {
+    if (!isMqttTriggeredSession || !isFocused) return undefined;
+    resetMqttIdleTimer();
+    return () => {
+      if (mqttIdleTimerRef.current) clearTimeout(mqttIdleTimerRef.current);
+      mqttIdleTimerRef.current = null;
+    };
+  }, [isFocused, isMqttTriggeredSession, resetMqttIdleTimer]);
 
   const handleCameraReady = useCallback(() => {
     setManualCameraError(null);
